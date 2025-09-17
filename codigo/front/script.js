@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // --- 2) smooth scroll para âncoras internas (href que começam com '#') ---
+  // --- 2) smooth scroll para âncoras internas  ---
   links.forEach(link => {
     const href = link.getAttribute('href') || '';
     if (href.startsWith('#')) {
@@ -33,26 +33,26 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       });
     }
-    // caso contrário: NÃO impedimos a navegação — o browser seguirá para a página indicada
+   
   });
 
   // --- 3) exemplo seguro de feedback para formulário de login (apenas se existir) ---
-  // Recomendo dar id ao form de login: <form id="loginForm">...</form>
+
   const loginForm = document.querySelector('#loginForm') || document.querySelector('#login form');
   if (loginForm) {
     loginForm.addEventListener('submit', (e) => {
-      // se você quiser usar POST normal para backend, REMOVA o preventDefault
+      
       e.preventDefault();
 
-      // feedback temporário (toast)
+      // feedback temporário 
       showToast('Login realizado (mock). Prossiga para integrar à API.', 'success');
 
-      // se quiser redirecionar após login (mock), descomente:
-      // setTimeout(() => window.location.href = 'carros.html', 800);
+      // pode dar coment
+       setTimeout(() => window.location.href = 'carros.html', 800);
     });
   }
 
-  // --- 4) botão de Modo Escuro (persistente) ---
+  // -- botão de Modo Escuro  ---
   if (!document.getElementById('darkToggle')) {
     const toggle = document.createElement('button');
     toggle.id = 'darkToggle';
@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
     toggle.textContent = localStorage.getItem('theme') === 'dark' ? '☀️ Modo Claro' : '🌙 Modo Escuro';
     document.body.appendChild(toggle);
 
-    // aplica tema salvo
+    
     if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
 
     toggle.addEventListener('click', () => {
@@ -71,7 +71,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- função utilitária de toast ---
+  // --- função utilitária  ---
   function showToast(text, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast toast-${type}`;

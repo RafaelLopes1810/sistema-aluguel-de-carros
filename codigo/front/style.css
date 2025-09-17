@@ -98,7 +98,7 @@ header nav a.ativo {
   padding-bottom: 4px;
 }
 
-/* botão toggle (posicionado no canto) */
+/* botão toggle  */
 .theme-toggle {
   position: fixed;
   right: 20px;
@@ -113,7 +113,7 @@ header nav a.ativo {
   z-index: 9999;
 }
 
-/* modo escuro: aplique no :root ou html/documentElement */
+/* modo escuro: */
 :root.dark, html.dark, body.dark {
   background: #111827;
   color: #e6eef8;
