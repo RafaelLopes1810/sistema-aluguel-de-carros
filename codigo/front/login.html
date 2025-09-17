@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Login - Sistema de Aluguel de Carros</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-container">
+    <div class="content-wrap">
+      <header class="navbar">
+        <div class="logo">🚗 AlugaCar</div>
+        <nav>
+          <a href="index.html">Início</a>
+          <a href="login.html" class="ativo">Login</a>
+          <a href="carros.html">Carros</a>
+          <a href="pedidos.html">Meus Pedidos</a>
+        </nav>
+      </header>
+      <main>
+        <section class="login-section">
+          <div class="login-card">
+            <h2>Login</h2>
+            <form id="loginForm">
+              <label for="cpf">CPF:</label>
+              <input type="text" id="cpf" name="cpf" required>
+
+              <label for="senha">Senha:</label>
+              <input type="password" id="senha" name="senha" required>
+
+              <button type="submit">Entrar</button>
+            </form>
+            <p>Não tem conta? <a href="cadastro.html">Cadastre-se aqui</a></p>
+          </div>
+        </section>
+      </main>
+    </div>
+    <footer>
+      <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
+    </footer>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

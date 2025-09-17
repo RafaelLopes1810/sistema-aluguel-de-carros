@@ -1,0 +1,490 @@
+/* Estilos globais */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #f4f4f9;
+  color: #333;
+}
+
+header {
+  background: #0056b3;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+header nav {
+  margin-top: 0.5rem;
+}
+
+header nav a {
+  color: white;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+header nav a:hover {
+  text-decoration: underline;
+}
+
+main {
+  padding: 2rem;
+}
+
+form {
+  max-width: 400px;
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+input, button {
+  padding: 0.6rem;
+  font-size: 1rem;
+}
+
+button {
+  background: #0056b3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+button:hover {
+  background: #003d80;
+}
+
+.lista-carros, .lista-pedidos {
+  display: grid;
+  gap: 1rem;
+}
+
+.lista-carros article, .lista-pedidos article {
+  background: white;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.1);
+}
+
+/* ===== Navbar link ativo ===== */
+header nav a.ativo {
+  border-bottom: 2px solid #ffd700;
+  padding-bottom: 3px;
+}
+
+/* ===== Dark Mode ===== */
+body.dark {
+  background: #1e1e1e;
+  color: #f5f5f5;
+}
+
+body.dark header {
+  background: #111;
+}
+
+body.dark form,
+body.dark .lista-carros article,
+body.dark .lista-pedidos article {
+  background: #2c2c2c;
+  color: #f5f5f5;
+}
+
+/* link ativo */
+header nav a.ativo {
+  border-bottom: 3px solid #ffd700;
+  padding-bottom: 4px;
+}
+
+/* botão toggle (posicionado no canto) */
+.theme-toggle {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  background: #fff;
+  color: #222;
+  border: 1px solid #ddd;
+  padding: 0.5rem 0.8rem;
+  border-radius: 10px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  cursor: pointer;
+  z-index: 9999;
+}
+
+/* modo escuro: aplique no :root ou html/documentElement */
+:root.dark, html.dark, body.dark {
+  background: #111827;
+  color: #e6eef8;
+}
+html.dark header { background: #0b1220; }
+
+/* TOAST */
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  bottom: 80px;
+  background: rgba(0,0,0,0.85);
+  color: #fff;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  opacity: 0;
+  transition: transform .25s ease, opacity .25s ease;
+  z-index: 9999;
+  pointer-events: none;
+}
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.toast-success { background: #16a34a; }
+
+
+/* ===== Navbar ===== */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #1f2937;
+  color: #fff;
+  padding: 0.8rem 2rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.navbar .logo {
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+.navbar nav a {
+  color: #f3f4f6;
+  text-decoration: none;
+  margin: 0 0.8rem;
+  padding: 5px 0;
+  transition: 0.3s;
+}
+.navbar nav a:hover {
+  color: #ffd700;
+}
+.navbar nav a.ativo {
+  border-bottom: 3px solid #ffd700;
+}
+
+/* ===== Hero Section ===== */
+.hero {
+  background: url(IMG/homepage.jpg) center/cover no-repeat;
+  height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  color: #fff;
+  position: relative;
+}
+.hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+}
+.hero-text {
+  position: relative;
+  z-index: 1;
+}
+.hero-text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+}
+.hero-text p {
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.btn-hero {
+  background: #ffd700;
+  color: #000;
+  padding: 0.8rem 1.5rem;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: 0.3s;
+}
+.btn-hero:hover {
+  background: #facc15;
+}
+
+/* ===== Cards de destaque ===== */
+.destaques {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.destaques h2 {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+}
+.card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+}
+.card h3 {
+  margin: 1rem 0 0.5rem;
+}
+.card p {
+  padding: 0 1rem 1.5rem;
+  color: #555;
+}
+
+/* ===== Rodapé ===== */
+footer {
+  background: #1f2937;
+  color: #ddd;
+  text-align: center;
+  padding: 1rem;
+  margin-top: 2rem;
+}
+
+/* === Unificação dos cards de carros e pedidos === */
+.destaques {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+.destaques h2 {
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  justify-content: center;
+}
+.card {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  width: 300px;
+  transition: transform 0.3s ease;
+}
+.card:hover {
+  transform: translateY(-8px);
+}
+.card img.car-img {
+  width: 100%;
+  height: 200px; /* altura fixa para todas as imagens */
+  object-fit: cover; /* garante que a imagem preencha a área sem distorção */
+  border-radius: 12px 12px 0 0;
+}
+.card h3 {
+  margin: 1rem 0 0.5rem;
+}
+.card p {
+  padding: 0 1rem 1.5rem;
+  color: #555;
+}
+
+/* --- Classes para empurrar o rodapé para baixo --- */
+.page-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrap {
+  flex: 1;
+}
+
+/* --- Estilização do Formulário de Login --- */
+.login-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.login-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+.login-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #1f2937;
+}
+
+.login-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.login-card label {
+  text-align: left;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.login-card input {
+  padding: 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.login-card button {
+  padding: 0.8rem;
+  background: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.login-card button:hover {
+  background: #003d80;
+}
+
+.login-card p {
+  margin-top: 1.5rem;
+  color: #6b7280;
+}
+
+.login-card a {
+  color: #0056b3;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.login-card a:hover {
+  text-decoration: underline;
+}
+
+/* --- Dark Mode para o formulário de login --- */
+body.dark .login-card {
+  background: #2c2c2c;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+body.dark .login-card h2 {
+  color: #f5f5f5;
+}
+
+body.dark .login-card label,
+body.dark .login-card p {
+  color: #d1d5db;
+}
+
+body.dark .login-card input {
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #f5f5f5;
+}
+
+body.dark .login-card a {
+  color: #60a5fa;
+}
+
+/* --- Estilização do Formulário de Cadastro --- */
+.cadastro-section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 0;
+}
+
+.cadastro-card {
+  background: white;
+  padding: 2.5rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  max-width: 450px;
+  width: 100%;
+  text-align: center;
+}
+
+.cadastro-card h2 {
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #1f2937;
+}
+
+.cadastro-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cadastro-card label {
+  text-align: left;
+  font-weight: bold;
+  color: #4b5563;
+}
+
+.cadastro-card input {
+  padding: 0.8rem;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+.cadastro-card button {
+  padding: 0.8rem;
+  background: #0056b3;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.cadastro-card button:hover {
+  background: #003d80;
+}
+
+/* --- Dark Mode para o formulário de cadastro --- */
+body.dark .cadastro-card {
+  background: #2c2c2c;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+}
+
+body.dark .cadastro-card h2 {
+  color: #f5f5f5;
+}
+
+body.dark .cadastro-card label,
+body.dark .cadastro-card p {
+  color: #d1d5db;
+}
+
+body.dark .cadastro-card input {
+  background: #374151;
+  border: 1px solid #4b5563;
+  color: #f5f5f5;
+}
