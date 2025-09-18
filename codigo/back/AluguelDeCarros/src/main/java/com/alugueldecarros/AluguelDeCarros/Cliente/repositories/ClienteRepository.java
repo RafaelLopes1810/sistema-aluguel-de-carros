@@ -15,4 +15,5 @@ public interface ClienteRepository extends JpaRepository<Cliente, Long> {
 
     // Autenticar cliente (login) por email e senha
     Optional<Cliente> findByEmailAndSenha(String email, String senha);
+
 }

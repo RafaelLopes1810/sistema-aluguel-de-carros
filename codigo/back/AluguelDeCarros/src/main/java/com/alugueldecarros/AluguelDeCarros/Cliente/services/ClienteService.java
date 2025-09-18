@@ -24,6 +24,10 @@ public class ClienteService {
         return clienteRepository.findById(id);
     }
 
+    public Optional<Cliente> buscarPorEmail(String email) {
+        return clienteRepository.findByEmail(email);
+    }
+
     public Cliente salvar(Cliente cliente) {
         // Verifica duplicidade de email
         if (clienteRepository.findByEmail(cliente.getEmail()).isPresent()) {

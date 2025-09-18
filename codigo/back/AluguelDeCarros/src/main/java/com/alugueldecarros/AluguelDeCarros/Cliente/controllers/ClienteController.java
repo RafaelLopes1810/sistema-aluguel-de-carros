@@ -9,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/clientes")
+@CrossOrigin(origins = "http://127.0.0.1:5500")
 public class ClienteController {
 
     private final ClienteService clienteService;
@@ -64,4 +65,13 @@ public class ClienteController {
             return ResponseEntity.notFound().build(); // 404 Not Found
         }
     }
+
+    @PostMapping("/login")
+    public ResponseEntity<Cliente> login(@RequestBody Cliente loginRequest) {
+        return clienteService.buscarPorEmail(loginRequest.getEmail())
+                .filter(c -> c.getSenha().equals(loginRequest.getSenha()))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(401).build()); // 401 Unauthorized
+    }
+
 }
