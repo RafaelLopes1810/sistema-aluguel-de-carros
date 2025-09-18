@@ -43,8 +43,12 @@ public class ClienteController {
         return clienteService.buscarPorId(id)
                 .map(c -> {
                     c.setNome(cliente.getNome());
-                    c.setEmail(cliente.getEmail());
+                    c.setCpf(cliente.getCpf());
+                    c.setEndereco(cliente.getEndereco());
                     c.setTelefone(cliente.getTelefone());
+                    c.setProfissao(cliente.getProfissao());
+                    c.setEmail(cliente.getEmail());
+                    c.setSenha(cliente.getSenha());
                     return ResponseEntity.ok(clienteService.salvar(c));
                 })
                 .orElse(ResponseEntity.notFound().build());

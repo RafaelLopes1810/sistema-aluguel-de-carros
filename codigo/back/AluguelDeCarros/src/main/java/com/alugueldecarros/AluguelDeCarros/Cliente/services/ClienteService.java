@@ -25,11 +25,25 @@ public class ClienteService {
     }
 
     public Cliente salvar(Cliente cliente) {
+        // Verifica duplicidade de email
+        if (clienteRepository.findByEmail(cliente.getEmail()).isPresent()) {
+            throw new RuntimeException("Email já cadastrado!");
+        }
+
+        // Verifica duplicidade de CPF
+        if (clienteRepository.findByCpf(cliente.getCpf()).isPresent()) {
+            throw new RuntimeException("CPF já cadastrado!");
+        }
+
         return clienteRepository.save(cliente);
     }
 
     public void deletar(Long id) {
         clienteRepository.deleteById(id);
     }
-}
 
+    // Login (autenticação básica)
+    public Optional<Cliente> login(String email, String senha) {
+        return clienteRepository.findByEmailAndSenha(email, senha);
+    }
+}
