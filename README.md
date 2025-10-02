@@ -37,3 +37,20 @@ Mostra a **organização lógica dos pacotes** no projeto, seguindo o padrão **
 ![Diagrama de Pacotes](./docs/diagrama-de-pacotes.png)
 
 ---
+
+### Diagrama de Componentes (Visão Lógica)
+Mostra a **divisão do sistema em partes independentes** que se comunicam entre si.  
+No projeto, o frontend consome a API do backend (Spring Boot), que organiza as regras de negócio em camadas (Controller, Service e Repository) e persiste os dados no banco **MySQL**.
+
+![Diagrama de Componentes](./docs/diagrama-de-componentes.png)
+
+---
+
+### Diagrama de Implantação (Visão Física)
+Representa a **distribuição do sistema nos diferentes ambientes de execução**.  
+Os usuários acessam o sistema por meio de um navegador web, que se conecta ao **servidor da aplicação Spring Boot**. Esse servidor, por sua vez, comunica-se com o **servidor MySQL** para armazenar e recuperar os dados.
+
+![Diagrama de Implantação](./docs/diagrama-de-implantacao.png)
+
+---
+
