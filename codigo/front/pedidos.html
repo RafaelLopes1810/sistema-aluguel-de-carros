@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Meus Pedidos</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <div class="page-container">
     <div class="content-wrap">
@@ -21,18 +23,8 @@
       <main>
         <section class="destaques">
           <h2>Meus Pedidos</h2>
-          <div class="card-container">
-            <div class="card">
-              <h3>Pedido #1</h3>
-              <p>Carro: Fiat Argo | Status: Pendente</p>
-              <button>Cancelar</button>
-              <button>Modificar</button>
-            </div>
-            <div class="card">
-              <h3>Pedido #2</h3>
-              <p>Carro: Chevrolet Onix | Status: Aprovado</p>
-              <button>Cancelar</button>
-            </div>
+          <div class="card-container" id="pedidosContainer">
+            <!-- Pedidos serão carregados dinamicamente -->
           </div>
         </section>
       </main>
@@ -41,6 +33,78 @@
       <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
     </footer>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    const apiUrl = "http://localhost:8080/api/pedidos";
+    const pedidosContainer = document.getElementById("pedidosContainer");
+
+    const clienteId = localStorage.getItem("clienteId");
+    const clienteEmail = localStorage.getItem("clienteEmail");
+    const isAdmin = (clienteEmail === "admin");
+
+    async function carregarPedidos() {
+      try {
+        let response;
+
+        if (isAdmin) {
+          response = await fetch(apiUrl); // todos os pedidos
+        } else {
+          response = await fetch(`${apiUrl}/cliente/${clienteId}`); // pedidos do cliente logado
+        }
+
+        const pedidos = await response.json();
+        pedidosContainer.innerHTML = "";
+
+        if (pedidos.length === 0) {
+          pedidosContainer.innerHTML = "<p>Nenhum pedido encontrado.</p>";
+          return;
+        }
+
+        pedidos.forEach(pedido => {
+          const card = document.createElement("div");
+          card.className = "card";
+
+          card.innerHTML = `
+            <h3>Pedido #${pedido.id}</h3>
+            <p>Carro: ${pedido.carro.nome} | Status: ${pedido.status}</p>
+            ${isAdmin 
+              ? `
+                <button onclick="atualizarStatus(${pedido.id}, 'Aprovado')">Aprovar</button>
+                <button onclick="atualizarStatus(${pedido.id}, 'Não Aprovado')">Rejeitar</button>
+              `
+              : `
+                ${pedido.status === 'Pendente' 
+                  ? `<button onclick="cancelarPedido(${pedido.id})">Cancelar</button>` 
+                  : ""}
+              `
+            }
+          `;
+          pedidosContainer.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar pedidos:", error);
+        pedidosContainer.innerHTML = "<p>Erro ao carregar pedidos do servidor.</p>";
+      }
+    }
+
+    async function cancelarPedido(id) {
+      if (confirm("Deseja realmente cancelar este pedido?")) {
+        await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        carregarPedidos();
+      }
+    }
+
+    async function atualizarStatus(id, status) {
+      await fetch(`${apiUrl}/${id}/status`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status })
+      });
+      carregarPedidos();
+    }
+
+    carregarPedidos();
+  </script>
 </body>
+
 </html>

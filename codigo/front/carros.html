@@ -1,10 +1,12 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
   <meta charset="UTF-8">
   <title>Carros Disponíveis</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <header class="navbar">
     <div class="logo">🚗 AlugaCar</div>
@@ -16,29 +18,144 @@
       <a href="perfil.html">Perfil</a>
     </nav>
   </header>
+
   <main>
+    <!-- Botão só visível para admin -->
+    <button id="admin-btn" style="display:none;" onclick="window.location.href='cadastroCarro.html'">
+      ➕ Cadastrar Novo Carro
+    </button>
+
     <section class="destaques">
       <h2>Carros Disponíveis</h2>
       <div class="card-container">
-        <div class="card">
-            <img class="car-img" src="IMG/argo.png" alt="Fiat Argo">
-            <h3>Fiat Argo</h3>
-            <p>Ano: 2022 | Placa: ABC-1234</p>
-            <button>Alugar</button>
-        </div>
-        <div class="card">
-            <img class="car-img" src="IMG/onix.png" alt="Chevrolet Onix">
-            <h3>Chevrolet Onix</h3>
-            <p>Ano: 2023 | Placa: XYZ-9876</p>
-            <button>Alugar</button>
-        </div>
+        
       </div>
     </section>
   </main>
-    <footer>
+
+  <footer>
     <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
   </footer>
 
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Carros Disponíveis</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="logo">🚗 AlugaCar</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="login.html">Login</a>
+      <a href="carros.html" class="ativo">Carros</a>
+      <a href="pedidos.html">Meus Pedidos</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Botão só visível para admin -->
+    <button id="admin-btn" style="display:none;" onclick="window.location.href='cadastroCarro.html'">
+      ➕ Cadastrar Novo Carro
+    </button>
+
+    <section class="destaques">
+      <h2>Carros Disponíveis</h2>
+      <div class="card-container"></div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
+  </footer>
+
+  <script>
+    const apiUrl = "http://localhost:8080/api/carros";
+    const pedidosApiUrl = "http://localhost:8080/api/pedidos";
+    const cardContainer = document.querySelector(".card-container");
+
+    // Pega informações do usuário logado
+    const clienteId = localStorage.getItem("clienteId");
+    const clienteEmail = localStorage.getItem("clienteEmail");
+    const isAdmin = (clienteEmail === "admin");
+
+    // Função para carregar carros
+    async function carregarCarros() {
+      try {
+        const response = await fetch(apiUrl);
+        const carros = await response.json();
+
+        cardContainer.innerHTML = "";
+
+        if (carros.length === 0) {
+          cardContainer.innerHTML = "<p>Nenhum carro disponível no momento.</p>";
+          return;
+        }
+
+        carros.forEach(carro => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img class="car-img" src="${carro.foto}" alt="${carro.nome}">
+            <h3>${carro.nome}</h3>
+            <p>Ano: ${carro.ano} | Placa: ${carro.placa}</p>
+            ${!isAdmin ? `<button onclick="alugarCarro(${carro.id})">Alugar</button>` : ""}
+            ${isAdmin ? `<button onclick="deletarCarro(${carro.id})">Excluir</button>` : ""}
+          `;
+          cardContainer.appendChild(card);
+        });
+
+        if (isAdmin) {
+          document.getElementById("admin-btn").style.display = "block";
+        }
+      } catch (error) {
+        console.error("Erro ao carregar carros:", error);
+        cardContainer.innerHTML = "<p>Erro ao carregar carros do servidor.</p>";
+      }
+    }
+
+    // Função para excluir carro (apenas admin)
+    async function deletarCarro(id) {
+      if (confirm("Tem certeza que deseja excluir este carro?")) {
+        await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        carregarCarros();
+      }
+    }
+
+    // Função para alugar carro (criar pedido)
+    async function alugarCarro(carroId) {
+      if (!clienteId) {
+        alert("Você precisa estar logado para alugar um carro!");
+        window.location.href = "login.html";
+        return;
+      }
+
+      try {
+        const response = await fetch(`${pedidosApiUrl}?clienteId=${clienteId}&carroId=${carroId}`, {
+          method: "POST"
+        });
+
+        if (response.ok) {
+          alert("Pedido de aluguel criado com sucesso! Você pode acompanhar em 'Meus Pedidos'.");
+          window.location.href = "pedidos.html";
+        } else {
+          alert("Erro ao criar pedido de aluguel.");
+        }
+      } catch (error) {
+        console.error("Erro ao criar pedido:", error);
+        alert("Erro de conexão com servidor.");
+      }
+    }
+
+    carregarCarros();
+  </script>
+
   <script src="script.js"></script>
 </body>
+
 </html>
