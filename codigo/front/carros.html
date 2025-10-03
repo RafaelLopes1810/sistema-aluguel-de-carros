@@ -2,160 +2,125 @@
 <html lang="pt-BR">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Carros Disponíveis</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <title>Carros Disponíveis</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
-  <header class="navbar">
-    <div class="logo">🚗 AlugaCar</div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="login.html">Login</a>
-      <a href="carros.html" class="ativo">Carros</a>
-      <a href="pedidos.html">Meus Pedidos</a>
-      <a href="perfil.html">Perfil</a>
-    </nav>
-  </header>
+  <header class="navbar">
+    <div class="logo">🚗 AlugaCar</div>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="login.html">Login</a>
+      <a href="carros.html" class="ativo">Carros</a>
+      <a href="pedidos.html">Meus Pedidos</a>
+      <a href="perfil.html">Perfil</a>
+    </nav>
+  </header>
 
-  <main>
-    <!-- Botão só visível para admin -->
-    <button id="admin-btn" style="display:none;" onclick="window.location.href='cadastroCarro.html'">
-      ➕ Cadastrar Novo Carro
-    </button>
+  <main>
+        <button id="admin-btn" style="display:none;" onclick="window.location.href='cadastroCarro.html'">
+      ➕ Cadastrar Novo Carro
+    </button>
 
-    <section class="destaques">
-      <h2>Carros Disponíveis</h2>
-      <div class="card-container">
-        
-      </div>
-    </section>
-  </main>
+    <section class="destaques">
+      <h2>Carros Disponíveis</h2>
+      <div class="card-container"></div>
+    </section>
+  </main>
 
-  <footer>
-    <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
-  </footer>
+  <footer>
+    <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
+  </footer>
 
-<!DOCTYPE html>
-<html lang="pt-BR">
+  <script>
+    const apiUrl = "http://localhost:8080/api/carros";
+    const pedidosApiUrl = "http://localhost:8080/api/pedidos";
+    const cardContainer = document.querySelector(".card-container");
 
-<head>
-  <meta charset="UTF-8">
-  <title>Carros Disponíveis</title>
-  <link rel="stylesheet" href="style.css">
-</head>
+    // Pega informações do usuário logado
+    const clienteId = localStorage.getItem("clienteId");
+    const clienteEmail = localStorage.getItem("clienteEmail");
+    const isAdmin = (clienteEmail === "admin"); // Ou "admin@alugacar.com.br"
 
-<body>
-  <header class="navbar">
-    <div class="logo">🚗 AlugaCar</div>
-    <nav>
-      <a href="index.html">Início</a>
-      <a href="login.html">Login</a>
-      <a href="carros.html" class="ativo">Carros</a>
-      <a href="pedidos.html">Meus Pedidos</a>
-      <a href="perfil.html">Perfil</a>
-    </nav>
-  </header>
+    // Função para exibir o botão de admin
+    function verificarAdmin() {
+      if (isAdmin) {
+        document.getElementById("admin-btn").style.display = "block";
+      }
+    }
 
-  <main>
-    <!-- Botão só visível para admin -->
-    <button id="admin-btn" style="display:none;" onclick="window.location.href='cadastroCarro.html'">
-      ➕ Cadastrar Novo Carro
-    </button>
+    // Função para carregar carros
+    async function carregarCarros() {
+      try {
+        const response = await fetch(apiUrl);
+        const carros = await response.json();
 
-    <section class="destaques">
-      <h2>Carros Disponíveis</h2>
-      <div class="card-container"></div>
-    </section>
-  </main>
+        cardContainer.innerHTML = "";
 
-  <footer>
-    <p>© 2025 AlugaCar - Todos os direitos reservados.</p>
-  </footer>
+        if (carros.length === 0) {
+          cardContainer.innerHTML = "<p>Nenhum carro disponível no momento.</p>";
+          return;
+        }
 
-  <script>
-    const apiUrl = "http://localhost:8080/api/carros";
-    const pedidosApiUrl = "http://localhost:8080/api/pedidos";
-    const cardContainer = document.querySelector(".card-container");
+        carros.forEach(carro => {
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <img class="car-img" src="${carro.foto}" alt="${carro.nome}">
+            <h3>${carro.nome}</h3>
+            <p>Ano: ${carro.ano} | Placa: ${carro.placa}</p>
+            ${!isAdmin ? `<button onclick="alugarCarro(${carro.id})">Alugar</button>` : ""}
+            ${isAdmin ? `<button onclick="deletarCarro(${carro.id})">Excluir</button>` : ""}
+          `;
+          cardContainer.appendChild(card);
+        });
+      } catch (error) {
+        console.error("Erro ao carregar carros:", error);
+        cardContainer.innerHTML = "<p>Erro ao carregar carros do servidor.</p>";
+      }
+    }
 
-    // Pega informações do usuário logado
-    const clienteId = localStorage.getItem("clienteId");
-    const clienteEmail = localStorage.getItem("clienteEmail");
-    const isAdmin = (clienteEmail === "admin");
+    // Função para excluir carro (apenas admin)
+    async function deletarCarro(id) {
+      if (confirm("Tem certeza que deseja excluir este carro?")) {
+        await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
+        carregarCarros();
+      }
+    }
 
-    // Função para carregar carros
-    async function carregarCarros() {
-      try {
-        const response = await fetch(apiUrl);
-        const carros = await response.json();
+    // Função para alugar carro (criar pedido)
+    async function alugarCarro(carroId) {
+      if (!clienteId) {
+        alert("Você precisa estar logado para alugar um carro!");
+        window.location.href = "login.html";
+        return;
+      }
 
-        cardContainer.innerHTML = "";
+      try {
+        const response = await fetch(`${pedidosApiUrl}?clienteId=${clienteId}&carroId=${carroId}`, {
+          method: "POST"
+        });
 
-        if (carros.length === 0) {
-          cardContainer.innerHTML = "<p>Nenhum carro disponível no momento.</p>";
-          return;
-        }
+        if (response.ok) {
+          alert("Pedido de aluguel criado com sucesso! Você pode acompanhar em 'Meus Pedidos'.");
+          window.location.href = "pedidos.html";
+        } else {
+          alert("Erro ao criar pedido de aluguel.");
+        }
+      } catch (error) {
+        console.error("Erro ao criar pedido:", error);
+        alert("Erro de conexão com servidor.");
+      }
+    }
 
-        carros.forEach(carro => {
-          const card = document.createElement("div");
-          card.className = "card";
-          card.innerHTML = `
-            <img class="car-img" src="${carro.foto}" alt="${carro.nome}">
-            <h3>${carro.nome}</h3>
-            <p>Ano: ${carro.ano} | Placa: ${carro.placa}</p>
-            ${!isAdmin ? `<button onclick="alugarCarro(${carro.id})">Alugar</button>` : ""}
-            ${isAdmin ? `<button onclick="deletarCarro(${carro.id})">Excluir</button>` : ""}
-          `;
-          cardContainer.appendChild(card);
-        });
+    // Chama a função de verificação e de carregar carros
+    verificarAdmin();
+    carregarCarros();
+  </script>
 
-        if (isAdmin) {
-          document.getElementById("admin-btn").style.display = "block";
-        }
-      } catch (error) {
-        console.error("Erro ao carregar carros:", error);
-        cardContainer.innerHTML = "<p>Erro ao carregar carros do servidor.</p>";
-      }
-    }
-
-    // Função para excluir carro (apenas admin)
-    async function deletarCarro(id) {
-      if (confirm("Tem certeza que deseja excluir este carro?")) {
-        await fetch(`${apiUrl}/${id}`, { method: "DELETE" });
-        carregarCarros();
-      }
-    }
-
-    // Função para alugar carro (criar pedido)
-    async function alugarCarro(carroId) {
-      if (!clienteId) {
-        alert("Você precisa estar logado para alugar um carro!");
-        window.location.href = "login.html";
-        return;
-      }
-
-      try {
-        const response = await fetch(`${pedidosApiUrl}?clienteId=${clienteId}&carroId=${carroId}`, {
-          method: "POST"
-        });
-
-        if (response.ok) {
-          alert("Pedido de aluguel criado com sucesso! Você pode acompanhar em 'Meus Pedidos'.");
-          window.location.href = "pedidos.html";
-        } else {
-          alert("Erro ao criar pedido de aluguel.");
-        }
-      } catch (error) {
-        console.error("Erro ao criar pedido:", error);
-        alert("Erro de conexão com servidor.");
-      }
-    }
-
-    carregarCarros();
-  </script>
-
-  <script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 
 </html>
